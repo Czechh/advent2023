@@ -1,8 +1,8 @@
 pub mod problems;
 pub mod utils;
 
-use problems::uno;
+use problems::*;
 
 fn main() {
-    uno::run();
+    dos::run();
 }
