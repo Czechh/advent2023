@@ -6,5 +6,6 @@ use problems::*;
 fn main() {
     // uno::run();
     // dos::run();
-    tres::run();
+    // tres::run();
+    cuatro::run();
 }
