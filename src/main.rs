@@ -4,5 +4,7 @@ pub mod utils;
 use problems::*;
 
 fn main() {
-    dos::run();
+    // uno::run();
+    // dos::run();
+    tres::run();
 }
