@@ -8,5 +8,6 @@ fn main() {
     // dos::run();
     // tres::run();
     // cuatro::run();
-    cinco::run();
+    // cinco::run();
+    seis::run();
 }
