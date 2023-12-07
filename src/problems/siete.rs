@@ -39,13 +39,36 @@ fn get_hand(hand: HashMap<char, i32>) -> i32 {
     return 0; // nonde
 }
 
+fn alternate_sort(x: &str, y: &str, ranking: &HashMap<char, i32>) -> Ordering {
+    let mut order = Ordering::Equal;
+    let x_chars: Vec<char> = x.chars().collect();
+    let y_chars: Vec<char> = y.chars().collect();
+    let mut i = 0;
+    while order == Ordering::Equal {
+        let first = ranking.get(&x_chars[i]).unwrap();
+        let second = ranking.get(&y_chars[i]).unwrap();
+        order = first.cmp(second);
+        i += 1;
+    }
+    order
+}
+
+fn get_score(sorted_results: Vec<(&str, &str, HashMap<char, i32>, i32)>) -> i32 {
+    let mut score = 0;
+
+    for (i, (_, val, _, _)) in sorted_results.iter().enumerate() {
+        let num: i32 = val.parse().unwrap();
+        let multiplier = (i as i32 + 1) * num;
+        score += multiplier;
+    }
+
+    score
+}
+
 pub fn run() {
     let file_buffer = read_to_vec("./src/inputs/siete.txt");
     let input = String::from_utf8(file_buffer).unwrap();
-    let mut sum1 = 0;
-    let mut sum2 = 0;
-
-    let card_ranking = HashMap::from([
+    let rank1 = HashMap::from([
         ('A', 14),
         ('K', 13),
         ('Q', 12),
@@ -60,8 +83,7 @@ pub fn run() {
         ('3', 3),
         ('2', 2),
     ]);
-
-    let card_ranking2 = HashMap::from([
+    let rank2 = HashMap::from([
         ('A', 14),
         ('K', 13),
         ('Q', 12),
@@ -127,50 +149,17 @@ pub fn run() {
         .collect();
 
     results1.sort_by(|(x, _, _, a), (y, _, _, b)| match a.cmp(&b) {
-        Ordering::Equal => {
-            let mut order = Ordering::Equal;
-            let x_chars: Vec<char> = x.chars().collect();
-            let y_chars: Vec<char> = y.chars().collect();
-            let mut i = 0;
-            while order == Ordering::Equal {
-                let first = card_ranking.get(&x_chars[i]).unwrap();
-                let second = card_ranking.get(&y_chars[i]).unwrap();
-                order = first.cmp(second);
-                i += 1;
-            }
-            order
-        }
+        Ordering::Equal => alternate_sort(x, y, &rank1),
         other => other,
     });
 
     results2.sort_by(|(x, _, _, a), (y, _, _, b)| match a.cmp(&b) {
-        Ordering::Equal => {
-            let mut order = Ordering::Equal;
-            let x_chars: Vec<char> = x.chars().collect();
-            let y_chars: Vec<char> = y.chars().collect();
-            let mut i = 0;
-            while order == Ordering::Equal {
-                let first = card_ranking2.get(&x_chars[i]).unwrap();
-                let second = card_ranking2.get(&y_chars[i]).unwrap();
-                order = first.cmp(second);
-                i += 1;
-            }
-            order
-        }
+        Ordering::Equal => alternate_sort(x, y, &rank2),
         other => other,
     });
 
-    for (i, (_, val, _, _)) in results1.iter().enumerate() {
-        let num: i32 = val.parse().unwrap();
-        let multiplier = (i as i32 + 1) * num;
-        sum1 += multiplier;
-    }
-
-    for (i, (_, val, _, _)) in results2.iter().enumerate() {
-        let num: i32 = val.parse().unwrap();
-        let multiplier = (i as i32 + 1) * num;
-        sum2 += multiplier;
-    }
+    let sum1 = get_score(results1);
+    let sum2 = get_score(results2);
 
     println!("Sum 1 {}", sum1);
     println!("Sum 2 {}", sum2);
